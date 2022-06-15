@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -24,8 +25,8 @@ export class BoardsController {
   constructor(private boardsService: BoardsService) {}
 
   @Get()
-  getAllBoard(): Promise<Board[]> {
-    return this.boardsService.getAllBoards();
+  getAllBoard(@Req() req): Promise<Board[]> {
+    return this.boardsService.getAllBoards(req.user);
   }
 
   // @Get()
@@ -34,8 +35,8 @@ export class BoardsController {
   // }
 
   @Get('/:id')
-  async getBoardById(@Param('id') id: number): Promise<Board> {
-    return this.boardsService.getBoardById(id);
+  async getBoardById(@Param('id') id: number, @Req() req): Promise<Board> {
+    return this.boardsService.getBoardById(id, req.user);
   }
   // @Get('/:id')
   // getBoardById(@Param('id') id: string): Board {
@@ -44,8 +45,11 @@ export class BoardsController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
-    return this.boardsService.createBoard(createBoardDto);
+  createBoard(
+    @Req() req,
+    @Body() createBoardDto: CreateBoardDto,
+  ): Promise<Board> {
+    return this.boardsService.createBoard(createBoardDto, req.user);
   }
 
   // @Post()
@@ -58,8 +62,9 @@ export class BoardsController {
   updateBoardStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body('status', BoardStatusValidationPipe) status: BoardStatus,
+    @Req() req,
   ): Promise<Board> {
-    return this.boardsService.updateBoardStatus(id, status);
+    return this.boardsService.updateBoardStatus(id, status, req.user);
   }
 
   // @Patch('/:id/status')
@@ -71,8 +76,11 @@ export class BoardsController {
   // }
 
   @Delete('/:id')
-  deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.boardsService.deleteBoard(id);
+  deleteBoard(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req,
+  ): Promise<void> {
+    return this.boardsService.deleteBoard(id, req.user);
   }
 
   // @Delete('/:id')
