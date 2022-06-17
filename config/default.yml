@@ -4,7 +4,7 @@ server:
 db:
   type: 'postgres'
   port: 5432
-  database: 'boardproject'
+  database: 'board-app'
 
 jwt:
   expiresIn: 3600
